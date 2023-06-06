@@ -1,7 +1,11 @@
 import { Client } from 'pg';
 
-function getClient(): Client {
-  return new Client()
+const client = new Client();
+client.connect();
+
+async function getAll() {
+  const data = await client.query("SELECT * FROM game");
+  return data;
 }
 
-export default getClient;
+export default getAll;
