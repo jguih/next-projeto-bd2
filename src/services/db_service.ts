@@ -1,11 +1,28 @@
-import { Client } from 'pg';
+import { Pool, QueryResult } from 'pg';
 
-const client = new Client();
-client.connect();
+const pool = new Pool();
 
-async function getAll() {
-  const data = await client.query("SELECT * FROM game");
-  return data;
+pool.on('error', (err, client) => {
+  console.error('Unexpected error on idle client', err) // your callback here
+  process.exit(-1)
+})
+
+export default async function getAllGames(): Promise<QueryResult<any>> {
+  return pool.connect()
+    .then(client => {
+      return client.query("SELECT * FROM game")
+        .then(res => {
+          client.release()
+          return res
+        })
+        .catch(err => {
+          client.release()
+          console.log(err)
+          return err
+        })
+    })
+    .catch(err => {
+      console.log(err)
+      return err
+    })
 }
-
-export default getAll;
