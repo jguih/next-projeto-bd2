@@ -56,13 +56,13 @@ const columns = [
   }),
 ]
 
-export default function Table(
-  { games, rowSelection, setRowSelection }:
-    {
-      games: Game[],
-      rowSelection: any,
-      setRowSelection: any
-    }) {
+export default function Table({
+  games, rowSelection, setRowSelection
+}: {
+  games: Game[],
+  rowSelection: any,
+  setRowSelection: any
+}) {
   const table = useReactTable({
     data: games,
     columns: columns,

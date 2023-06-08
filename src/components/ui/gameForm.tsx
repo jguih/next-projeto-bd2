@@ -6,7 +6,7 @@ export default function GameForm({ onSubmit }: React.ComponentPropsWithoutRef<'f
     <form onSubmit={onSubmit}>
       <label className='block'>
         <span className='block text-sm'>Nome</span>
-        <Input name='name' type='text'></Input>
+        <Input name='name' type='text' required></Input>
       </label>
       <label className='block mt-3'>
         <span className='block text-sm'>Descrição</span>
@@ -14,7 +14,13 @@ export default function GameForm({ onSubmit }: React.ComponentPropsWithoutRef<'f
       </label>
       <label className='block mt-3'>
         <span className='block text-sm'>Preço</span>
-        <Input name='price' type='number' min='0.00' step='0.01'></Input>
+        <Input 
+          name='price' 
+          type='number' 
+          min='0.00' 
+          step='0.01'
+          required
+        ></Input>
       </label>
       <label className='mb-3'>Desconto</label>
       <div className='flex gap-3'>
@@ -25,7 +31,7 @@ export default function GameForm({ onSubmit }: React.ComponentPropsWithoutRef<'f
           max='100'
           step='1'
           defaultValue='0'
-          className=''
+          required
         />
         <Input
           name='isDiscountActive'

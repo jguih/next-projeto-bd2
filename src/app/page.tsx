@@ -17,7 +17,12 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <h1>Loading...</h1>
+      <>
+        <div className='container mb-3'>
+          <GameForm onSubmit={handleSubmit}></GameForm>
+        </div>
+        <h1>Loading...</h1>
+      </>
     )
   }
 
@@ -40,7 +45,7 @@ export default function Home() {
             Excluir
           </Button> : null}
         <Table
-          games={games as Game[]}
+          games={games}
           rowSelection={rowSelection}
           setRowSelection={setRowSelection}
         ></Table>
