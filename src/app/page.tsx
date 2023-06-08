@@ -37,21 +37,21 @@ export default function Home() {
   if (games) {
     return (
       <>
+        {Object.keys(rowSelection).length > 0 ?
+          <Button className='fixed right-2 bottom-2'>Excluir Selecionados</Button> : null}
         <div className='container mb-3'>
           <GameForm onSubmit={handleSubmit}></GameForm>
         </div>
-        {Object.keys(rowSelection).length > 0 ? 
-          <Button className='fixed bottom-1 right-1'>
-            Excluir
-          </Button> : null}
-        <Table
-          games={games}
-          rowSelection={rowSelection}
-          setRowSelection={setRowSelection}
-        ></Table>
-        <pre>
-          {JSON.stringify(games, null, 2)}
-        </pre>
+        <div className='container display-table'>
+          <Table
+            games={games}
+            rowSelection={rowSelection}
+            setRowSelection={setRowSelection}
+          ></Table>
+          {/*<pre>
+            {JSON.stringify(games, null, 2)}
+          </pre>*/}
+        </div>
       </>
     )
   }

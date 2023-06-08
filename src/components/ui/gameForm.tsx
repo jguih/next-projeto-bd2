@@ -27,16 +27,17 @@ export default function GameForm({ onSubmit }: React.ComponentPropsWithoutRef<'f
         <Input
           name='discount'
           type='number'
-          min='0'
-          max='100'
-          step='1'
+          min='0.00'
+          max='1.00'
+          step='0.01'
           defaultValue='0'
+          className='flex-1'
           required
         />
-        <Input
+        <input
           name='isDiscountActive'
           type='checkbox'
-          className='w-8 h-8 accent-green-600 flex-none rounded'
+          className='w-8 h-8 mt-2 accent-green-600 flex-none rounded'
           defaultChecked={true}
         />
       </div>

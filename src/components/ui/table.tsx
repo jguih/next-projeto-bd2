@@ -15,6 +15,7 @@ const columns = [
         type='checkbox'
         checked={props.table.getIsAllRowsSelected()}
         onChange={props.table.getToggleAllRowsSelectedHandler()}
+        className='w-4 h-4 rounded'
       ></input>,
     id: 'selection',
     cell: props =>
@@ -22,37 +23,38 @@ const columns = [
         type='checkbox'
         checked={props.row.getIsSelected()}
         onChange={props.row.getToggleSelectedHandler()}
-      ></input>
+        className='w-4 h-4 rounded'
+      ></input>,
   }),
   columnHelper.accessor('id_game', {
     header: 'ID',
     cell: props => <span>{props.getValue()}</span>,
-    footer: props => props.column.id,
+    //footer: props => props.column.id,
   }),
   columnHelper.accessor('name', {
     header: 'Nome',
     cell: props => <span>{props.getValue()}</span>,
-    footer: props => props.column.id,
+    //footer: props => props.column.id,
   }),
   columnHelper.accessor('description', {
     header: 'Descrição',
-    cell: props => <span>{props.getValue()}</span>,
-    footer: props => props.column.id,
+    cell: props => <span>{props.getValue().split(' ', 20).join(' ')+'...'}</span>,
+    //footer: props => props.column.id,
   }),
   columnHelper.accessor('price', {
     header: 'Preço',
     cell: props => <span>{props.getValue()}</span>,
-    footer: props => props.column.id,
+    //footer: props => props.column.id,
   }),
   columnHelper.accessor('discount', {
     header: 'Desconto',
     cell: props => <span>{props.getValue()}</span>,
-    footer: props => props.column.id,
+    //footer: props => props.column.id,
   }),
   columnHelper.accessor('isDiscountActive', {
-    header: 'Desconto Ativo',
-    cell: props => <span>{props.getValue() ? 'Sim' : 'Não'}</span>,
-    footer: props => props.column.id,
+    header: 'Ativo?',
+    cell: props => <input type='checkbox' checked={props.getValue()} className='w-4 h-4 rounded accent-green-600'/>,
+    //footer: props => props.column.id,
   }),
 ]
 
@@ -75,57 +77,54 @@ export default function Table({
   })
 
   return (
-    <div>
-      <table
-        className='table-auto w-full border-separate border-spacing-2 p-1'>
-        <thead className=''>
-          {table.getHeaderGroups().map(headerGroup => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map(header => (
-                <th
-                  key={header.id}
-                  className={`p-2 ${header.id == 'selection' ? 'text-center' : 'text-left'} bg-transparent`}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map(row => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map(cell => (
-                <td
-                  key={cell.id}
-                  className={`p-2 ${cell.id == `${row.id}_selection` ? 'text-center' : 'bg-slate-800 border border-slate-600 rounded-md'}`}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          {table.getFooterGroups().map(footerGroup => (
-            <tr key={footerGroup.id}>
-              {footerGroup.headers.map(header => (
-                <th key={header.id} className='p-2 text-left bg-transparent'>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                      header.column.columnDef.footer,
-                      header.getContext()
-                    )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </tfoot>
-      </table>
-    </div>
+    <table
+      className='table-auto w-full border-separate border-spacing-2 p-1'>
+      <thead className=''>
+        {table.getHeaderGroups().map(headerGroup => (
+          <tr key={headerGroup.id}>
+            {headerGroup.headers.map(header => (
+              <th key={header.id}
+                className={`p-2 ${header.id == 'selection' ? 'text-center' : 'text-left'} bg-transparent`}>
+                {header.isPlaceholder
+                  ? null
+                  : flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+              </th>
+            ))}
+          </tr>
+        ))}
+      </thead>
+      <tbody>
+        {table.getRowModel().rows.map(row => (
+          <tr key={row.id}>
+            {row.getVisibleCells().map(cell => (
+              <td
+                key={cell.id}
+                className={`p-2 ${cell.id == `${row.id}_selection` ? 'text-center' : 'bg-slate-800 border border-slate-600 rounded-md'}`}>
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+      <tfoot>
+        {table.getFooterGroups().map(footerGroup => (
+          <tr key={footerGroup.id}>
+            {footerGroup.headers.map(header => (
+              <th key={header.id} className='p-2 text-left bg-transparent'>
+                {header.isPlaceholder
+                  ? null
+                  : flexRender(
+                    header.column.columnDef.footer,
+                    header.getContext()
+                  )}
+              </th>
+            ))}
+          </tr>
+        ))}
+      </tfoot>
+    </table>
   )
 }

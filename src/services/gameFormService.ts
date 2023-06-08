@@ -1,3 +1,4 @@
+import axios from 'axios';
 
 function getInput(input: any) {
   return input instanceof HTMLInputElement ? input : null
@@ -8,8 +9,9 @@ function parse(value: string) {
 }
 
 // const formatter = Intl.NumberFormat('en-US',{ minimumFractionDigits: 2, maximumFractionDigits: 2 })
-export default function handleSubmit(event: React.FormEvent) {
+export default async function handleSubmit(event: React.FormEvent) {
   event.preventDefault();
+  
   const elements = (event.target as HTMLFormElement).elements
   const getElement = (name: string) => elements.namedItem(name)
   const newGame: Game = {
@@ -19,5 +21,12 @@ export default function handleSubmit(event: React.FormEvent) {
     discount: parse(getInput(getElement('discount'))?.value || ''),
     isDiscountActive: getInput(getElement('isDiscountActive'))?.checked || false
   }
-  console.log(newGame)
+  
+  axios.post('/api/game', {body: newGame})
+    .then((res) => {
+      console.log(res)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
 }
