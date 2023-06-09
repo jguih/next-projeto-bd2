@@ -1,10 +1,11 @@
 type Game = {
-  id_game?: number,
+  id?: number,
   name: string,
-  description: string,
+  enUS_description: string,
   price: number,
   discount: number,
-  isDiscountActive: boolean
+  isDiscountActive: boolean,
+  platforms: string[]
 }
 
 type next_api_data = {

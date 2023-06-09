@@ -5,6 +5,9 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import { useState } from 'react';
+import Button from './button';
+import axios from 'axios';
 
 const columnHelper = createColumnHelper<Game>()
 
@@ -26,7 +29,7 @@ const columns = [
         className='w-4 h-4 rounded'
       ></input>,
   }),
-  columnHelper.accessor('id_game', {
+  columnHelper.accessor('id', {
     header: 'ID',
     cell: props => <span>{props.getValue()}</span>,
     //footer: props => props.column.id,
@@ -36,9 +39,9 @@ const columns = [
     cell: props => <span>{props.getValue()}</span>,
     //footer: props => props.column.id,
   }),
-  columnHelper.accessor('description', {
+  columnHelper.accessor('enUS_description', {
     header: 'Descrição',
-    cell: props => <span>{props.getValue().split(' ', 20).join(' ')+'...'}</span>,
+    cell: props => <span>{props.getValue().split(' ', 20).join(' ') + '...'}</span>,
     //footer: props => props.column.id,
   }),
   columnHelper.accessor('price', {
@@ -48,23 +51,26 @@ const columns = [
   }),
   columnHelper.accessor('discount', {
     header: 'Desconto',
-    cell: props => <span>{props.getValue()}</span>,
+    cell: props => <span>{`${props.getValue() * 100}%`}</span>,
     //footer: props => props.column.id,
   }),
   columnHelper.accessor('isDiscountActive', {
-    header: 'Ativo?',
-    cell: props => <input type='checkbox' checked={props.getValue()} className='w-4 h-4 rounded accent-green-600'/>,
+    header: 'Ativo',
+    cell: props => <input type='checkbox' checked={props.getValue()} readOnly className='w-4 h-4 rounded accent-green-600' />,
     //footer: props => props.column.id,
   }),
+  columnHelper.accessor('platforms', {
+    header: 'Plataformas',
+    cell: props => <pre>{props.getValue().join('\n')}</pre>
+  })
 ]
 
 export default function Table({
-  games, rowSelection, setRowSelection
+  games
 }: {
   games: Game[],
-  rowSelection: any,
-  setRowSelection: any
 }) {
+  const [rowSelection, setRowSelection] = useState({});
   const table = useReactTable({
     data: games,
     columns: columns,
@@ -76,55 +82,80 @@ export default function Table({
     getCoreRowModel: getCoreRowModel(),
   })
 
+  async function handleDeleteSelected() {
+    Object.keys(rowSelection).forEach((index) => {
+      const id = table.getRow(index).original.id
+      axios.delete(`/api/game?id=${id}`)
+        .then((res) => {
+          console.log(res)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    })
+  }
+
   return (
-    <table
-      className='table-auto w-full border-separate border-spacing-2 p-1'>
-      <thead className=''>
-        {table.getHeaderGroups().map(headerGroup => (
-          <tr key={headerGroup.id}>
-            {headerGroup.headers.map(header => (
-              <th key={header.id}
-                className={`p-2 ${header.id == 'selection' ? 'text-center' : 'text-left'} bg-transparent`}>
-                {header.isPlaceholder
-                  ? null
-                  : flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody>
-        {table.getRowModel().rows.map(row => (
-          <tr key={row.id}>
-            {row.getVisibleCells().map(cell => (
-              <td
-                key={cell.id}
-                className={`p-2 ${cell.id == `${row.id}_selection` ? 'text-center' : 'bg-slate-800 border border-slate-600 rounded-md'}`}>
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-      <tfoot>
-        {table.getFooterGroups().map(footerGroup => (
-          <tr key={footerGroup.id}>
-            {footerGroup.headers.map(header => (
-              <th key={header.id} className='p-2 text-left bg-transparent'>
-                {header.isPlaceholder
-                  ? null
-                  : flexRender(
-                    header.column.columnDef.footer,
-                    header.getContext()
-                  )}
-              </th>
-            ))}
-          </tr>
-        ))}
-      </tfoot>
-    </table>
+    <>
+      {Object.keys(rowSelection).length > 0 ?
+        <Button
+          onClick={handleDeleteSelected}
+          className='fixed right-2 bottom-2 bg-rose-800 hover:bg-rose-600'
+        >Excluir Selecionados</Button> : null}
+      <table
+        className='table-auto w-full border-separate border-spacing-2 p-1'>
+        <thead className=''>
+          {table.getHeaderGroups().map(headerGroup => (
+            <tr key={headerGroup.id} className=''>
+              {headerGroup.headers.map(header => (
+                <th key={header.id}
+                  className={`p-2 bg-transparent ${header.column.id === 'selection' ? 'text-center' : 'text-left'}`}
+                >
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {table.getRowModel().rows.map(row => (
+            <tr key={row.id} className=''>
+              {row.getVisibleCells().map(cell => (
+                <td
+                  key={cell.id}
+                  className={`p-2 
+                    ${cell.column.id === 'selection' ? 'text-center' : 'bg-slate-800 border border-slate-600 rounded-md '}
+                    ${cell.column.id === 'isDiscountActive' ? 'text-center' : ''}
+                    ${cell.column.id === 'discount' ? 'text-center' : ''}`}
+                >
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+        <tfoot>
+          {table.getFooterGroups().map(footerGroup => (
+            <tr key={footerGroup.id}>
+              {footerGroup.headers.map(header => (
+                <th key={header.id} className='p-2 text-left bg-transparent'>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                      header.column.columnDef.footer,
+                      header.getContext()
+                    )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </tfoot>
+      </table>
+    </>
   )
 }
