@@ -5,7 +5,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from './button';
 import axios from 'axios';
 
@@ -88,6 +88,7 @@ export default function Table({
       axios.delete(`/api/game?id=${id}`)
         .then((res) => {
           console.log(res)
+          setRowSelection({})
         })
         .catch((err) => {
           console.log(err)
@@ -100,7 +101,7 @@ export default function Table({
       {Object.keys(rowSelection).length > 0 ?
         <Button
           onClick={handleDeleteSelected}
-          className='fixed right-2 bottom-2 bg-rose-800 hover:bg-rose-600'
+          className='fixed w-fit bottom-2 inset-x-0 mx-auto bg-rose-600 hover:bg-rose-800'
         >Excluir Selecionados</Button> : null}
       <table
         className='table-auto w-full border-separate border-spacing-2 p-1'>

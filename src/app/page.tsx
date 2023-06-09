@@ -12,9 +12,9 @@ export default function Home() {
     return (
       <>
         <div className='container mb-3'>
-          <GameForm onSubmit={handleSubmit}></GameForm>
+          <GameForm className='w-80 mx-auto'/>
+          <div className='mx-auto w-fit my-3'>Loading data...</div>
         </div>
-        <h1>Loading...</h1>
       </>
     )
   }
@@ -30,16 +30,9 @@ export default function Home() {
   if (games) {
     return (
       <>
-        <div className='container mb-3'>
+        <div className='container'>
           <GameForm onSubmit={handleSubmit} className='w-80 mx-auto'></GameForm>
-        </div>
-        <div className='container display-table'>
-          <Table
-            games={games}
-          ></Table>
-          {/*<pre>
-            {JSON.stringify(games, null, 2)}
-          </pre>*/}
+          <Table games={games} />
         </div>
       </>
     )

@@ -3,9 +3,10 @@ import { Pool, QueryResult } from 'pg';
 const pool = new Pool();
 
 const sql = {
-  allGames: 'SELECT * FROM game_data',
+  games: 'SELECT * FROM game_data',
   insertGame: 'INSERT INTO game ("name", "description", "price", "discount", "isDiscountActive") VALUES ($1, $2, $3, $4, $5)',
   deleteGame: 'DELETE FROM game WHERE id = $1',
+  platforms: 'SELECT * FROM platform'
 }
 
 pool.on('error', (err, client) => {
@@ -13,10 +14,30 @@ pool.on('error', (err, client) => {
   process.exit(-1)
 })
 
-export async function getAllGames(): Promise<QueryResult<any>> {
+export async function getGames(): Promise<QueryResult<any>> {
   return pool.connect()
     .then(client => {
-      return client.query(sql.allGames)
+      return client.query(sql.games)
+        .then(res => {
+          client.release()
+          return res
+        })
+        .catch(err => {
+          client.release()
+          console.log(err)
+          throw err
+        })
+    })
+    .catch(err => {
+      console.log(err)
+      throw err
+    })
+}
+
+export async function getPlatforms(): Promise<QueryResult<any>> {
+  return pool.connect()
+    .then(client => {
+      return client.query(sql.platforms)
         .then(res => {
           client.release()
           return res

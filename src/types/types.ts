@@ -8,6 +8,11 @@ type Game = {
   platforms: string[]
 }
 
+type Platform = {
+  id: number,
+  name: string
+}
+
 type next_api_data = {
   rows: Game[]
 }

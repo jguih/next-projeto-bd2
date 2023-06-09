@@ -1,8 +1,8 @@
-import { getAllGames, addGame, deleteGame } from "@/services/dbService";
+import { getGames, addGame, deleteGame } from "@/services/dbService";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-  return await getAllGames()
+  return await getGames()
     .then((result) => {
       const data: next_api_data = {
         rows: result.rows
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(data, { status: 200, statusText: 'ok' });
     }).catch((err) => {
       return NextResponse.json({}, {
-        status: 500, statusText: "Could not get all games"
+        status: 500, statusText: 'Could not get games'
       });
     })
 }
@@ -24,7 +24,10 @@ export async function POST(request: Request) {
     })
   return await addGame(req as Game)
     .then((res) => {
-      return NextResponse.json({}, {
+      const data: next_api_data = {
+        rows: res.rows
+      }
+      return NextResponse.json(data, {
         status: 200,
         statusText: 'New game inserted succesfully!'
       })
