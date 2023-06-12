@@ -5,7 +5,7 @@ export default function useGames() {
   const { data, error, isLoading } = useSWR('/api/game', fetcher, { refreshInterval: 1000 })
 
   return {
-    games: data?.rows,
+    games: data?.rows as Game[],
     isLoading,
     isError: error
   }

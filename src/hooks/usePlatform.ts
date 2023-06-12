@@ -5,8 +5,8 @@ export default function usePlatform() {
   const { data, error, isLoading } = useSWR('/api/platform', fetcher, { refreshInterval: 1000 })
   
   return {
-    platforms: data?.rows,
-    isLoading,
-    isError: error
+    platforms: data?.rows as Platform[],
+    isPlatformsLoading: isLoading,
+    isPlatformsError: error
   }
 }

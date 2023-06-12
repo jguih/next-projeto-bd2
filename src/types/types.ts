@@ -14,5 +14,10 @@ type Platform = {
 }
 
 type next_api_data = {
-  rows: Game[]
+  rows: any[]
+}
+
+type CheckboxEvent = {
+  value: any, 
+  checked: boolean
 }

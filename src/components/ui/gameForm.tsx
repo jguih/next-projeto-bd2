@@ -1,8 +1,51 @@
 import { Input } from "./input";
 import Button from "./button";
 import Dropdown from "./dropdown";
+import { FormEventHandler, useEffect, useState } from "react";
+import DropdownItem from "./dropdownItem";
+import Checkbox from "./checkbox";
 
-export default function GameForm({ onSubmit, className }: React.ComponentPropsWithoutRef<'form'>) {
+type GameFormData = {
+  onSubmit: FormEventHandler<HTMLFormElement>,
+  className: string,
+  platforms: Platform[]
+}
+
+export default function GameForm({
+  onSubmit, className, platforms
+}: GameFormData) {
+  const [checkedCheckboxes, setCheckedCheckboxes] = useState<{
+    [name: string]: {
+      checked: boolean
+    }
+  }>({})
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCheckedCheckboxes((prev) => {
+      return {
+        ...prev,
+        [event.target.id]: {
+          checked: event.target.checked
+        }
+      }
+    })
+  }
+
+  const getCheckedCountButton = (): React.ReactNode => {
+    let count = 0;
+    checkedCheckboxes ?
+      Object.values(checkedCheckboxes).forEach((value) => {
+        if (value.checked) count++
+      }) : null
+    return (
+      <button
+        className='px-2 rounded-full bg-sky-800 hover:bg-sky-600'
+        type='button'
+        onClick={() => setCheckedCheckboxes({})}
+      >{count}</button>
+    )
+  }
+
   return (
     <form onSubmit={onSubmit} className={className}>
       <label className='block'>
@@ -44,8 +87,24 @@ export default function GameForm({ onSubmit, className }: React.ComponentPropsWi
           />
         </div>
       </label>
-      <Dropdown className='mt-3'>
-        
+      <Dropdown
+        className='mt-3'
+        label='Plataformas'
+        endLabel={getCheckedCountButton()}
+      >
+        {platforms?.map((platform, index) => {
+          return (
+            <DropdownItem key={index * 10}>
+              <Checkbox
+                key={index}
+                label={platform.name}
+                id={platform.name}
+                checked={checkedCheckboxes?.[platform.name]?.checked || false}
+                onChange={handleCheckboxChange}
+              />
+            </DropdownItem>
+          )
+        })}
       </Dropdown>
       <hr className='mt-3 border border-slate-700'></hr>
       <div className='w-fit mx-auto'>
