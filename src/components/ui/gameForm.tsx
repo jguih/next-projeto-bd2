@@ -4,21 +4,24 @@ import Dropdown from "./dropdown";
 import { FormEventHandler, useEffect, useState } from "react";
 import DropdownItem from "./dropdownItem";
 import Checkbox from "./checkbox";
+import { handleSubmit } from "@/services/gameFormService";
 
 type GameFormData = {
-  onSubmit: FormEventHandler<HTMLFormElement>,
   className: string,
   platforms: Platform[]
 }
 
 export default function GameForm({
-  onSubmit, className, platforms
+  className, platforms
 }: GameFormData) {
   const [checkedCheckboxes, setCheckedCheckboxes] = useState<{
     [name: string]: {
       checked: boolean
     }
   }>({})
+
+  useEffect(() => {
+  }, [checkedCheckboxes])
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCheckedCheckboxes((prev) => {
@@ -46,15 +49,24 @@ export default function GameForm({
     )
   }
 
+  const getPlatforms = (): string[] => {
+    const values = checkedCheckboxes ?
+      Object.entries(checkedCheckboxes)
+        .filter(value => value[1].checked)
+        .map(value => value[0]) : null
+    
+    return values || [];
+  }
+
   return (
-    <form onSubmit={onSubmit} className={className}>
+    <form onSubmit={(e) => handleSubmit(e, getPlatforms())} className={className}>
       <label className='block'>
         <span className='block text-sm'>Nome</span>
         <Input name='name' type='text' required></Input>
       </label>
       <label className='block mt-3'>
         <span className='block text-sm'>Descrição</span>
-        <Input name='description' type='text'></Input>
+        <Input name='enUS_description' type='text'></Input>
       </label>
       <label className='block mt-3 mb-3'>
         <span className='block text-sm'>Preço</span>

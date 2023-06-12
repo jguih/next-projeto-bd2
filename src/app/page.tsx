@@ -17,6 +17,18 @@ export default function Home() {
     return (
       <>
         <div className='container mb-3'>
+          {showGameForm &&
+            <GameForm
+              platforms={platforms}
+              className='w-80 mx-auto border-2 border-slate-800 rounded p-3'
+            ></GameForm>}
+          <div className='mx-auto w-fit mt-3'>
+            <Button onClick={() => setShowGameForm(prev => !prev)}
+              className='bg-sky-800 hover:bg-sky-600'
+            >
+              Mostrar formulário de jogo
+            </Button>
+          </div>
           <div className='mx-auto w-fit my-3'>Loading data...</div>
         </div>
       </>
@@ -37,7 +49,6 @@ export default function Home() {
         <div className='container'>
           {showGameForm &&
             <GameForm
-              onSubmit={handleSubmit}
               platforms={platforms}
               className='w-80 mx-auto border-2 border-slate-800 rounded p-3'
             ></GameForm>}
@@ -45,7 +56,7 @@ export default function Home() {
             <Button onClick={() => setShowGameForm(prev => !prev)}
               className='bg-sky-800 hover:bg-sky-600'
             >
-              Mostrar formulário de jogo
+              {`${showGameForm ? 'Esconder' : 'Mostrar'} formulário de jogo`}
             </Button>
           </div>
           <Table games={games} />

@@ -4,7 +4,7 @@ const pool = new Pool();
 
 const sql = {
   games: 'SELECT * FROM game_data',
-  insertGame: 'INSERT INTO game ("name", "description", "price", "discount", "isDiscountActive") VALUES ($1, $2, $3, $4, $5)',
+  insertGame: 'INSERT INTO game_data ("name", "enUS_description", "price", "discount", "isDiscountActive", "platforms") VALUES ($1, $2, $3, $4, $5, $6)',
   deleteGame: 'DELETE FROM game WHERE id = $1',
   platforms: 'SELECT * FROM platform'
 }
@@ -55,7 +55,8 @@ export async function getPlatforms(): Promise<QueryResult<any>> {
 }
 
 export async function addGame(newGame: Game): Promise<QueryResult<any>> {
-  const values = [newGame.name, newGame.enUS_description, newGame.price, newGame.discount, newGame.isDiscountActive]
+  const values = [newGame.name, newGame.enUS_description, newGame.price,
+  newGame.discount, newGame.isDiscountActive,`{${newGame.platforms}}`]
   return pool.connect()
     .then(client => {
       return client.query(sql.insertGame, values)

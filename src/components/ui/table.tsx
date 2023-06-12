@@ -5,9 +5,9 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Button from './button';
-import axios from 'axios';
+import { game } from '@/services/httpService';
 
 const columnHelper = createColumnHelper<Game>()
 
@@ -35,32 +35,32 @@ const columns = [
     //footer: props => props.column.id,
   }),
   columnHelper.accessor('name', {
-    header: 'Nome',
+    header: 'Name',
     cell: props => <span>{props.getValue()}</span>,
     //footer: props => props.column.id,
   }),
   columnHelper.accessor('enUS_description', {
-    header: 'Descrição',
+    header: 'Description',
     cell: props => <span>{props.getValue().split(' ', 20).join(' ') + '...'}</span>,
     //footer: props => props.column.id,
   }),
   columnHelper.accessor('price', {
-    header: 'Preço',
-    cell: props => <span>{props.getValue()}</span>,
+    header: 'Price',
+    cell: props => <span>{`R$ ${props.getValue()}`}</span>,
     //footer: props => props.column.id,
   }),
   columnHelper.accessor('discount', {
-    header: 'Desconto',
+    header: 'Discount',
     cell: props => <span>{`${props.getValue() * 100}%`}</span>,
     //footer: props => props.column.id,
   }),
   columnHelper.accessor('isDiscountActive', {
-    header: 'Ativo',
+    header: 'Active',
     cell: props => <input type='checkbox' checked={props.getValue()} readOnly className='w-4 h-4 rounded accent-green-600' />,
     //footer: props => props.column.id,
   }),
   columnHelper.accessor('platforms', {
-    header: 'Plataformas',
+    header: 'Platforms',
     cell: props => <pre>{props.getValue().join('\n')}</pre>
   })
 ]
@@ -85,15 +85,10 @@ export default function Table({
   async function handleDeleteSelected() {
     Object.keys(rowSelection).forEach((index) => {
       const id = table.getRow(index).original.id
-      axios.delete(`/api/game?id=${id}`)
-        .then((res) => {
-          console.log(res)
-          setRowSelection({})
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+      if (id)
+        game.delete(id)
     })
+    setRowSelection({})
   }
 
   return (
