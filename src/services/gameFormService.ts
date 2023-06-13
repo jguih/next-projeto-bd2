@@ -21,8 +21,12 @@ export async function handleSubmit(event: React.FormEvent, platforms: string[]) 
     discount: parse(getInput(getElement('discount'))?.value || ''),
     isDiscountActive: getInput(getElement('isDiscountActive'))?.checked || false,
     platforms: platforms
-  }
-  console.log(newGame)
-  
+  }  
+
   game.add(newGame)
+    .then((res) => {
+      if (res.ok) {
+        console.log('new game added succesfully')
+      }
+    })
 }

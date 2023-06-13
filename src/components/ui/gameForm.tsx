@@ -61,15 +61,15 @@ export default function GameForm({
   return (
     <form onSubmit={(e) => handleSubmit(e, getPlatforms())} className={className}>
       <label className='block'>
-        <span className='block text-sm'>Nome</span>
+        <span className='block text-sm'>Name</span>
         <Input name='name' type='text' required></Input>
       </label>
       <label className='block mt-3'>
-        <span className='block text-sm'>Descrição</span>
+        <span className='block text-sm'>Description</span>
         <Input name='enUS_description' type='text'></Input>
       </label>
       <label className='block mt-3 mb-3'>
-        <span className='block text-sm'>Preço</span>
+        <span className='block text-sm'>Price</span>
         <Input
           name='price'
           type='number'
@@ -79,7 +79,7 @@ export default function GameForm({
         ></Input>
       </label>
       <label className='mb-3'>
-        <span>Desconto</span>
+        <span>Discount</span>
         <div className='flex gap-3'>
           <Input
             name='discount'
@@ -101,7 +101,7 @@ export default function GameForm({
       </label>
       <Dropdown
         className='mt-3'
-        label='Plataformas'
+        label='Platforms'
         endLabel={getCheckedCountButton()}
       >
         {platforms?.map((platform, index) => {

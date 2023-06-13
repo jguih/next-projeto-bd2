@@ -24,5 +24,20 @@ export const game = {
       console.log(err)
       throw err
     }) 
+  },
+  update: async(id: number, column: string, value: string): Promise<Response> => {
+    return await fetch(`/api/game?id=${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        column, value
+      }),
+    })
+    .then((res) => {
+      return res
+    })
+    .catch((err) => {
+      console.log(err)
+      throw err
+    })
   }
 }

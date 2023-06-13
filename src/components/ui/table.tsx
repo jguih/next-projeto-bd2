@@ -1,4 +1,3 @@
-
 import {
   createColumnHelper,
   flexRender,
@@ -8,7 +7,7 @@ import {
 import { useState } from 'react';
 import Button from './button';
 import { game } from '@/services/httpService';
-import { InputColumn, TextAreaColumn } from '@/services/columnService';
+import { CheckboxColumn, InputColumn, TextAreaColumn } from '@/services/columnService';
 
 const columnHelper = createColumnHelper<Game>()
 
@@ -38,19 +37,27 @@ const columns = [
     ...InputColumn('Name', {className: 'w-40'}),
   }),
   columnHelper.accessor('enUS_description', {
-    ...TextAreaColumn('Description', {className: 'w-[500px] h-32'})
+    ...TextAreaColumn('Description', {className: 'w-[350px] h-32'})
   }),
   columnHelper.accessor('price', {
-    ...InputColumn('Price R$', {className: 'w-20'}),
+    ...InputColumn('Price R$', {
+      className: 'w-20', 
+      type: 'number',
+      min: '0.00',
+      step: '0.01',
+    }),
   }),
   columnHelper.accessor('discount', {
-    ...InputColumn('Discount', {className: 'w-16'}),
+    ...InputColumn('Discount', {
+      className: 'w-[60px]', 
+      type: 'number',
+      min: '0.00',
+      max: '1.00'
+    }),
     header: 'Discount',
   }),
   columnHelper.accessor('isDiscountActive', {
-    header: 'Active',
-    cell: props => <input type='checkbox' checked={props.getValue()} readOnly className='w-4 h-4 rounded accent-green-600' />,
-    //footer: props => props.column.id,
+    ...CheckboxColumn('Active', { className: 'w-4 h-4 rounded accent-green-600' })
   }),
   columnHelper.accessor('platforms', {
     header: 'Platforms',
@@ -91,7 +98,7 @@ export default function Table({
           onClick={handleDeleteSelected}
           className='fixed w-fit bottom-2 inset-x-0 mx-auto bg-rose-600 hover:bg-rose-800'
         >Excluir Selecionados</Button> : null}
-      <table className='table-auto border-separate border-spacing-2 p-1 mx-auto'>
+      <table className='table-auto border-separate border-spacing-2 p-1'>
         <thead className=''>
           {table.getHeaderGroups().map(headerGroup => (
             <tr key={headerGroup.id} className=''>
@@ -114,12 +121,8 @@ export default function Table({
           {table.getRowModel().rows.map(row => (
             <tr key={row.id} className=''>
               {row.getVisibleCells().map(cell => (
-                <td
-                  key={cell.id}
-                  className={`p-2
-                    ${cell.column.id === 'selection' ? 'text-center' : 'bg-slate-800 border border-slate-600 rounded-md '}
-                    ${cell.column.id === 'isDiscountActive' ? 'text-center' : ''}
-                    ${cell.column.id === 'discount' ? 'text-center' : ''}`}
+                <td key={cell.id}
+                  className={`p-2 ${cell.column.id === 'selection' ? 'text-center' : 'bg-slate-800 border border-slate-600 rounded-md text-center'}`}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>

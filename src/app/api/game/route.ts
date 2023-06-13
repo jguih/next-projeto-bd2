@@ -1,4 +1,4 @@
-import { getGames, addGame, deleteGame } from "@/services/dbService";
+import { getGames, addGame, deleteGame, updateGame } from "@/services/dbService";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     })
     .catch((err) => {
       return NextResponse.json({}, {
-        status: 500, 
+        status: 500,
         statusText: 'Game could not be inserted'
       });
     })
@@ -52,13 +52,42 @@ export async function DELETE(request: Request) {
     .then((res) => {
       return NextResponse.json({}, {
         status: 200,
-        statusText: 'Game with id '+id+' deleted succesfully!'
+        statusText: 'Game with id ' + id + ' deleted succesfully!'
       })
     })
     .catch((err) => {
       return NextResponse.json({}, {
         status: 500,
         statusText: 'Game could not be deleted'
+      })
+    })
+}
+
+export async function PATCH(request: NextRequest) {
+  const { searchParams } = new URL(request.url)
+  const id = searchParams.get('id')
+  if (!id)
+    return NextResponse.json({}, {
+      status: 400,
+      statusText: 'No id param passed to url'
+    })
+  const req = await request.json() as {column: string, value: string}
+  if (!req)
+    return NextResponse.json({}, {
+      status: 400,
+      statusText: 'Request with empty body!'
+    })
+  return await updateGame(Number.parseInt(id), req.column, req.value)
+    .then((res) => {
+      return NextResponse.json({}, {
+        status: 200,
+        statusText: 'Game with id '+id+' updated succesfully'
+      })
+    })
+    .catch((err) => {
+      return NextResponse.json({}, {
+        status: 500,
+        statusText: 'Game could not be updated'
       })
     })
 }

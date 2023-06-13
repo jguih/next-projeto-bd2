@@ -5,7 +5,13 @@ export default function useGames() {
   const { data, error, isLoading } = useSWR('/api/game', fetcher, { refreshInterval: 1000 })
 
   return {
-    games: data?.rows as Game[],
+    games: (data?.rows as Game[])?.sort((a, b) => {
+      if (a.id && b.id) {
+        if (a.id < b.id) return -1
+        if (a.id > b.id) return 1
+      }
+      return 0
+    }),
     isLoading,
     isError: error
   }
