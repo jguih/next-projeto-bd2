@@ -45,23 +45,23 @@ export default function Home() {
 
   if (games) {
     return (
-      <>
-        <div className='container'>
-          {showGameForm &&
-            <GameForm
-              platforms={platforms}
-              className='w-80 mx-auto border-2 border-slate-800 rounded p-3'
-            ></GameForm>}
-          <div className='mx-auto w-fit mt-3'>
-            <Button onClick={() => setShowGameForm(prev => !prev)}
-              className='bg-sky-800 hover:bg-sky-600'
-            >
-              {`${showGameForm ? 'Esconder' : 'Mostrar'} formulário de jogo`}
-            </Button>
-          </div>
+      <div className='w-fit'>
+        {showGameForm &&
+          <GameForm
+            platforms={platforms}
+            className='w-80 mx-auto border-2 border-slate-800 rounded p-3'
+          ></GameForm>}
+        <div className='mx-auto w-fit mt-3'>
+          <Button onClick={() => setShowGameForm(prev => !prev)}
+            className='bg-sky-800 hover:bg-sky-600'
+          >
+            {`${showGameForm ? 'Hide' : 'Show'} forms`}
+          </Button>
+        </div>
+        <div className='w-screen'>
           <Table games={games} />
         </div>
-      </>
+      </div>
     )
   }
 }

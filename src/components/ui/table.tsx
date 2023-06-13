@@ -8,6 +8,7 @@ import {
 import { useState } from 'react';
 import Button from './button';
 import { game } from '@/services/httpService';
+import { InputColumn, TextAreaColumn } from '@/services/columnService';
 
 const columnHelper = createColumnHelper<Game>()
 
@@ -31,28 +32,20 @@ const columns = [
   }),
   columnHelper.accessor('id', {
     header: 'ID',
-    cell: props => <span>{props.getValue()}</span>,
-    //footer: props => props.column.id,
+    cell: (props) => <span>{props.getValue()}</span>
   }),
   columnHelper.accessor('name', {
-    header: 'Name',
-    cell: props => <span>{props.getValue()}</span>,
-    //footer: props => props.column.id,
+    ...InputColumn('Name', {className: 'w-40'}),
   }),
   columnHelper.accessor('enUS_description', {
-    header: 'Description',
-    cell: props => <span>{props.getValue().split(' ', 20).join(' ') + '...'}</span>,
-    //footer: props => props.column.id,
+    ...TextAreaColumn('Description', {className: 'w-[500px] h-32'})
   }),
   columnHelper.accessor('price', {
-    header: 'Price',
-    cell: props => <span>{`R$ ${props.getValue()}`}</span>,
-    //footer: props => props.column.id,
+    ...InputColumn('Price R$', {className: 'w-20'}),
   }),
   columnHelper.accessor('discount', {
+    ...InputColumn('Discount', {className: 'w-16'}),
     header: 'Discount',
-    cell: props => <span>{`${props.getValue() * 100}%`}</span>,
-    //footer: props => props.column.id,
   }),
   columnHelper.accessor('isDiscountActive', {
     header: 'Active',
@@ -98,8 +91,7 @@ export default function Table({
           onClick={handleDeleteSelected}
           className='fixed w-fit bottom-2 inset-x-0 mx-auto bg-rose-600 hover:bg-rose-800'
         >Excluir Selecionados</Button> : null}
-      <table
-        className='table-auto w-full border-separate border-spacing-2 p-1'>
+      <table className='table-auto border-separate border-spacing-2 p-1 mx-auto'>
         <thead className=''>
           {table.getHeaderGroups().map(headerGroup => (
             <tr key={headerGroup.id} className=''>
@@ -124,7 +116,7 @@ export default function Table({
               {row.getVisibleCells().map(cell => (
                 <td
                   key={cell.id}
-                  className={`p-2 
+                  className={`p-2
                     ${cell.column.id === 'selection' ? 'text-center' : 'bg-slate-800 border border-slate-600 rounded-md '}
                     ${cell.column.id === 'isDiscountActive' ? 'text-center' : ''}
                     ${cell.column.id === 'discount' ? 'text-center' : ''}`}
