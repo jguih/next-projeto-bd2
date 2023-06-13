@@ -5,49 +5,14 @@ import { FormEventHandler, useEffect, useState } from "react";
 import DropdownItem from "./dropdownItem";
 import Checkbox from "./checkbox";
 import { handleSubmit } from "@/services/gameFormService";
+import PlatformsDropdown from "./platformsDropdown";
 
 type GameFormData = {
   className: string,
-  platforms: Platform[]
 }
 
-export default function GameForm({
-  className, platforms
-}: GameFormData) {
-  const [checkedCheckboxes, setCheckedCheckboxes] = useState<{
-    [name: string]: {
-      checked: boolean
-    }
-  }>({})
-
-  useEffect(() => {
-  }, [checkedCheckboxes])
-
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCheckedCheckboxes((prev) => {
-      return {
-        ...prev,
-        [event.target.id]: {
-          checked: event.target.checked
-        }
-      }
-    })
-  }
-
-  const getCheckedCountButton = (): React.ReactNode => {
-    let count = 0;
-    checkedCheckboxes ?
-      Object.values(checkedCheckboxes).forEach((value) => {
-        if (value.checked) count++
-      }) : null
-    return (
-      <button
-        className='px-2 rounded-full bg-sky-800 hover:bg-sky-600'
-        type='button'
-        onClick={() => setCheckedCheckboxes({})}
-      >{count}</button>
-    )
-  }
+export default function GameForm({className}: {className: string}) {
+  const [checkedCheckboxes, setCheckedCheckboxes] = useState<PlatformsDropdownData>({})
 
   const getPlatforms = (): string[] => {
     const values = checkedCheckboxes ?
@@ -99,25 +64,11 @@ export default function GameForm({
           />
         </div>
       </label>
-      <Dropdown
-        className='mt-3'
-        label='Platforms'
-        endLabel={getCheckedCountButton()}
-      >
-        {platforms?.map((platform, index) => {
-          return (
-            <DropdownItem key={index * 10}>
-              <Checkbox
-                key={index}
-                label={platform.name}
-                id={platform.name}
-                checked={checkedCheckboxes?.[platform.name]?.checked || false}
-                onChange={handleCheckboxChange}
-              />
-            </DropdownItem>
-          )
-        })}
-      </Dropdown>
+      <PlatformsDropdown
+        checkedCheckboxes={checkedCheckboxes}
+        setCheckedCheckboxes={setCheckedCheckboxes}
+        id='gameForm'
+      />
       <hr className='mt-3 border border-slate-700'></hr>
       <div className='w-fit mx-auto'>
         <Button type='submit' className='mt-3 mx-auto bg-green-600 hover:bg-green-800'>Adicionar Jogo</Button>

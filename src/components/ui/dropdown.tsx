@@ -14,7 +14,7 @@ export default function Dropdown({
 
   return (
     <div className={className}>
-      <div className={`py-1 px-2 border border-slate-600 rounded-md select-none flex items-center ${show ? 'bg-slate-600' : 'bg-slate-800 hover:bg-slate-700'}`}>
+      <div className={`py-1 px-2 border border-slate-600 rounded-md select-none flex items-center gap-6 ${show ? 'bg-slate-600' : 'bg-slate-800 hover:bg-slate-700'}`}>
         <div onClick={() => setShow((state) => !state)} className='flex items-center grow cursor-pointer'>
           {!show ?
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">

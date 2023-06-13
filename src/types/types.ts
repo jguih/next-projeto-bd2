@@ -21,3 +21,9 @@ type CheckboxEvent = {
   value: any, 
   checked: boolean
 }
+
+type PlatformsDropdownData = {
+  [name: string]: {
+    checked: boolean
+  }
+}

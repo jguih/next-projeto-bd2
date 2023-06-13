@@ -7,7 +7,7 @@ import {
 import { useState } from 'react';
 import Button from './button';
 import { game } from '@/services/httpService';
-import { CheckboxColumn, InputColumn, TextAreaColumn } from '@/services/columnService';
+import { CheckboxColumn, InputColumn, PlatformsColumn, TextAreaColumn } from '@/services/columnService';
 
 const columnHelper = createColumnHelper<Game>()
 
@@ -60,8 +60,7 @@ const columns = [
     ...CheckboxColumn('Active', { className: 'w-4 h-4 rounded accent-green-600' })
   }),
   columnHelper.accessor('platforms', {
-    header: 'Platforms',
-    cell: props => <pre>{props.getValue().join('\n')}</pre>
+    ...PlatformsColumn('Platforms')
   })
 ]
 
@@ -122,7 +121,7 @@ export default function Table({
             <tr key={row.id} className=''>
               {row.getVisibleCells().map(cell => (
                 <td key={cell.id}
-                  className={`p-2 ${cell.column.id === 'selection' ? 'text-center' : 'bg-slate-800 border border-slate-600 rounded-md text-center'}`}
+                  className={`p-2 ${cell.column.id === 'selection' ? 'text-center' : 'bg-slate-800 border border-slate-600 rounded-md h-[1px]'}`}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>

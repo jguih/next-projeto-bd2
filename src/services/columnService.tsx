@@ -1,6 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { useEffect, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { game } from "./httpService"
+import PlatformsDropdown from "@/components/ui/platformsDropdown"
+import PlatformsDropdownView from "@/components/ui/table/platformsDropdownView"
 
 export const InputColumn = (header: string, { ...props }: React.InputHTMLAttributes<HTMLInputElement> = {}): Partial<ColumnDef<Game>> => {
   return {
@@ -186,6 +188,78 @@ export const CheckboxColumn = (header: string, { ...props }: React.InputHTMLAttr
       else
         return (
           <p className='text-left text-sky-600'>Updating...</p>
+        )
+    },
+    header: header
+  }
+}
+
+export const PlatformsColumn = (header: string, { ...props }: React.InputHTMLAttributes<HTMLInputElement> = {}): Partial<ColumnDef<Game>> => {
+  return {
+    cell: ({ ...cellProps }) => {
+      const initialValue = cellProps.getValue() as string[];
+      
+      // We need to keep and update the state of the cell normally
+      const [isLoading, setIsLoading] = useState(false)
+      const [initialChecked, setInitialChecked] = useState<PlatformsDropdownData>({})
+      const [showDropdownView, setShowDropdownView] = useState(false)
+
+      // If the initial value is changed externally, such as on the database 
+      useEffect(() => {
+        let initialChecked = {};
+        initialValue
+          .forEach((value) => {
+            initialChecked = {
+              ...initialChecked,
+              [value]: {
+                checked: true
+              }
+            }
+          })
+        setInitialChecked(initialChecked)
+      }, [initialValue])
+
+      const updateGame = () => {
+        const gameID = cellProps.row.original.id
+        if (gameID) {
+          setIsLoading(true)
+          game.update(gameID, cellProps.column.id, '')
+            .then((res) => {
+              if (!res.ok) {
+                //setValue(initialValue)
+              }
+            })
+            .catch((err) => {
+              //setValue(initialValue)
+            })
+        }
+      }
+
+      const handleOnChange = (state: PlatformsDropdownData) => {
+        const values = state ?
+          Object.entries(state)
+            .filter(value => value[1].checked)
+            .map(value => value[0]) : null
+          
+        console.log(values)
+      }
+
+      if (!showDropdownView)
+        return (
+          <div className='bg-transparent p-2 rounded hover:bg-slate-600 select-none cursor-pointer'
+            onClick={() => setShowDropdownView(true)}
+          >
+            <pre>{initialValue.join('\n')}</pre>
+          </div>
+        )
+      else
+        return (
+          <PlatformsDropdownView
+            onReturn={() => setShowDropdownView(false)}
+            onChange={handleOnChange}
+            initialChecked={initialChecked}
+            id={cellProps.row.original.id+''}
+          />
         )
     },
     header: header

@@ -4,7 +4,7 @@ type CheckboxData = {
   checked: boolean | undefined,
   onChange: React.ChangeEventHandler<HTMLInputElement>,
   label: string,
-  id: string
+  id: string,
 }
 
 export default function Checkbox({
