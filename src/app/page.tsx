@@ -18,7 +18,7 @@ export default function Home() {
             <GameForm className='w-80 mx-auto border-2 border-slate-800 rounded p-3'/>}
           <div className='mx-auto w-fit mt-3'>
           <Button onClick={() => setShowGameForm(prev => !prev)}
-            className='bg-sky-800 hover:bg-sky-600'
+            className='bg-sky-700 hover:bg-sky-600'
           >
             {`${showGameForm ? 'Hide' : 'Show'} forms`}
           </Button>

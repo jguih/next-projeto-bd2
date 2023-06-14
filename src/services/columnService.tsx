@@ -200,26 +200,27 @@ export const PlatformsColumn = (header: string, { ...props }: React.InputHTMLAtt
       const initialValue = cellProps.getValue() as string[];
 
       // We need to keep and update the state of the cell normally
+      const [value, setValue] = useState(initialValue);
       const [isLoading, setIsLoading] = useState(false)
       const [showDropdownView, setShowDropdownView] = useState(false)
 
       // If the initial value is changed externally, such as on the database 
       useEffect(() => {
-
+        //setValue(initialValue)
       }, [initialValue])
 
       const updateGame = () => {
         const gameID = cellProps.row.original.id
         if (gameID) {
           setIsLoading(true)
-          game.update(gameID, cellProps.column.id, '')
+          game.update(gameID, cellProps.column.id, value)
             .then((res) => {
+              console.log(res)
               if (!res.ok) {
-                //setValue(initialValue)
               }
             })
             .catch((err) => {
-              //setValue(initialValue)
+              console.log(err)
             })
         }
       }
@@ -228,7 +229,11 @@ export const PlatformsColumn = (header: string, { ...props }: React.InputHTMLAtt
         const values = state
           .filter(val => val.checked)
           .map(val => val.platform.name)
-        console.log(state)
+        setValue(values)
+      }
+
+      const handleOnSave = (event: React.MouseEvent) => {
+        updateGame()
       }
 
       if (!showDropdownView)
@@ -243,6 +248,7 @@ export const PlatformsColumn = (header: string, { ...props }: React.InputHTMLAtt
         return (
           <PlatformsDropdownView
             onReturn={() => setShowDropdownView(false)}
+            onSave={handleOnSave}
             onChange={handleOnChange}
             initialChecked={initialValue}
             id={cellProps.row.original.id + ''}

@@ -1,10 +1,12 @@
 import { Dispatch, SetStateAction } from "react"
 import PlatformsDropdown from "../platformsDropdown"
+import Button from "../button"
 
 export default function PlatformsDropdownView({
-  onReturn, onChange, initialChecked, id, show
+  onReturn, onSave, onChange, initialChecked, id, show
 }: {
   onReturn: (event: React.MouseEvent) => null | void | undefined,
+  onSave: (event: React.MouseEvent) => null | void | undefined,
   onChange: (state: PlatformsDropdownData[]) => null | void,
   initialChecked: string[],
   id: string,
@@ -25,6 +27,13 @@ export default function PlatformsDropdownView({
         initialChecked={initialChecked}
         show={show}
       />
+      <div className='mx-auto mt-2'>
+        <Button onClick={onSave}
+          className='bg-green-700 hover:bg-green-600 w-full'
+        >
+          Save
+        </Button>
+      </div>
     </div>
   )
 }

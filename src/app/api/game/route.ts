@@ -71,7 +71,7 @@ export async function PATCH(request: NextRequest) {
       status: 400,
       statusText: 'No id param passed to url'
     })
-  const req = await request.json() as {column: string, value: string}
+  const req = await request.json() as {column: string, value: string | string[]}
   if (!req)
     return NextResponse.json({}, {
       status: 400,

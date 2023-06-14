@@ -78,12 +78,12 @@ export async function addGame(newGame: Game): Promise<QueryResult<any>> {
     })
 }
 
-export async function updateGame(id: number, column: string, value: string) {
+export async function updateGame(id: number, column: string, value: string | string[]) {
   return pool.connect()
     .then(async client => {
       const query = format(sql.updateGame, column)
       return client.query(query, [value, id])
-        .then(res => {
+      .then(res => {
           client.release()
           return res
         })

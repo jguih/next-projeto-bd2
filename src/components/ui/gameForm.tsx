@@ -71,7 +71,7 @@ export default function GameForm({className}: {className: string}) {
       </div>
       <hr className='mt-3 border border-slate-700'></hr>
       <div className='w-fit mx-auto'>
-        <Button type='submit' className='mt-3 mx-auto bg-green-600 hover:bg-green-800'>Adicionar Jogo</Button>
+        <Button type='submit' className='mt-3 mx-auto bg-green-700 hover:bg-green-600'>Adicionar Jogo</Button>
       </div>
     </form>
   )
