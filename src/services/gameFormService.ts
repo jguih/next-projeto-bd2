@@ -26,7 +26,7 @@ export async function handleSubmit(event: React.FormEvent, platforms: string[]) 
   game.add(newGame)
     .then((res) => {
       if (res.ok) {
-        console.log('new game added succesfully')
+        
       }
     })
 }

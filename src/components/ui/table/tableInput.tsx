@@ -1,8 +1,9 @@
 
-export function Input({
+export function TableInput({
   className, type, min, max, step, defaultValue, 
   defaultChecked, pattern, name, id, required, 
-  placeholder, value, onChange, onKeyDown, onKeyUp
+  placeholder, value, onChange, onKeyDown, onKeyUp,
+  onBlur
 }: React.ComponentPropsWithoutRef<'input'>) {
   return (
     <input
@@ -21,10 +22,12 @@ export function Input({
       onChange={onChange}
       onKeyDown={onKeyDown}
       onKeyUp={onKeyUp}
-      className={'block mt-2 w-full px-2 py-1 bg-slate-950 border border-slate-600 rounded-md '+ 
-        'focus:outline-none focus:border-slate-500 focus:ring-slate-500 focus:ring-2 '+
+      onBlur={onBlur}
+      className={'block p-1 bg-transparent rounded-md '+ 
+        'focus:outline-none focus:border-slate-500 focus:ring-slate-500 focus:ring-4 '+
         'invalid:text-red-600 invalid:border invalid:border-red-600 '+
         'focus:invalid:text-red-600 focus:invalid:ring-red-600 focus:invalid:border-red-600 '+className}
+      spellCheck={false}
     ></input>
   )
 }

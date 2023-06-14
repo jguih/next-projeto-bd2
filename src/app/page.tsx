@@ -1,10 +1,11 @@
 'use client';
 
-import Table from "@/components/ui/table";
+import Table from "@/components/ui/table/table";
 import useGames from "../hooks/useGames";
 import GameForm from "@/components/ui/gameForm";
 import { useState } from "react";
 import Button from "@/components/ui/button";
+import Loading from "@/components/ui/loading";
 
 export default function Home() {
   const { games, isLoading: isGameLoading, isError: isGameError } = useGames();
@@ -15,15 +16,17 @@ export default function Home() {
       <>
         <div className='mb-3'>
           {showGameForm &&
-            <GameForm className='w-80 mx-auto border-2 border-slate-800 rounded p-3'/>}
+            <GameForm className='w-80 mx-auto border-2 border-slate-800 rounded p-3' />}
           <div className='mx-auto w-fit mt-3'>
-          <Button onClick={() => setShowGameForm(prev => !prev)}
-            className='bg-sky-700 hover:bg-sky-600'
-          >
-            {`${showGameForm ? 'Hide' : 'Show'} forms`}
-          </Button>
-        </div>
-          <div className='mx-auto w-fit my-3'>Loading data...</div>
+            <Button onClick={() => setShowGameForm(prev => !prev)}
+              className='bg-sky-700 hover:bg-sky-600'
+            >
+              {`${showGameForm ? 'Hide' : 'Show'} forms`}
+            </Button>
+          </div>
+          <div className='mx-auto w-fit mt-6'>
+            <Loading text='Loading table data...' />
+          </div>
         </div>
       </>
     )
@@ -41,7 +44,7 @@ export default function Home() {
     return (
       <div>
         {showGameForm &&
-          <GameForm className='w-80 mx-auto border-2 border-slate-800 rounded p-3'/>}
+          <GameForm className='w-80 mx-auto border-2 border-slate-800 rounded p-3' />}
         <div className='w-fit mx-auto mt-3'>
           <Button onClick={() => setShowGameForm(prev => !prev)}
             className='bg-sky-800 hover:bg-sky-600'

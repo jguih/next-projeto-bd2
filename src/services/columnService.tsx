@@ -1,8 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { game } from "./httpService"
-import PlatformsDropdown from "@/components/ui/platformsDropdown"
 import PlatformsDropdownView from "@/components/ui/table/platformsDropdownView"
+import Loading from "@/components/ui/loading"
+import { TableInput } from "@/components/ui/table/tableInput"
+import { TableTextArea } from "@/components/ui/table/tableTextArea"
 
 export const InputColumn = (header: string, { ...props }: React.InputHTMLAttributes<HTMLInputElement> = {}): Partial<ColumnDef<Game>> => {
   return {
@@ -18,8 +20,8 @@ export const InputColumn = (header: string, { ...props }: React.InputHTMLAttribu
         setIsLoading(false)
       }, [initialValue])
 
-      const updateGame = () => {
-        if (!value) {
+      const updateGame = (valid: boolean) => {
+        if (!valid) {
           setValue(initialValue)
           return
         }
@@ -30,11 +32,11 @@ export const InputColumn = (header: string, { ...props }: React.InputHTMLAttribu
             game.update(gameID, cellProps.column.id, value as string)
               .then((res) => {
                 if (!res.ok) {
-                  setValue(initialValue)
+                  setIsLoading(false)
                 }
               })
               .catch((err) => {
-                setValue(initialValue)
+                setIsLoading(false)
               })
           }
         }
@@ -43,33 +45,31 @@ export const InputColumn = (header: string, { ...props }: React.InputHTMLAttribu
       const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
           const input = e.currentTarget as HTMLInputElement
-          updateGame()
-          input.blur()
+          updateGame(input.validity.valid)
         }
       }
 
       const handleBlur = async (e: React.FocusEvent) => {
-        updateGame()
+        const input = e.currentTarget as HTMLInputElement
+        updateGame(input.validity.valid)
       }
 
       if (!isLoading)
         return (
-          <input
+          <TableInput
             {...props}
             value={value as string}
             onChange={e => setValue(e.target.value)}
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
-            className={`bg-transparent p-1 rounded
-                  focus:outline-none focus:border-slate-500 focus:ring-slate-500 focus:ring-2 
-                  ${props.className}`}
+            className={`${props.className}`}
             spellCheck={false}
             disabled={isLoading}
           />
         )
       else
         return (
-          <p className={`${isLoading ? 'block' : 'hidden'} text-left text-red-600`}>Updating...</p>
+          <Loading text='Updating...' />
         )
     },
     header: header
@@ -90,8 +90,8 @@ export const TextAreaColumn = (header: string, { ...props }: React.InputHTMLAttr
         setIsLoading(false)
       }, [initialValue])
 
-      const updateGame = () => {
-        if (!value) {
+      const updateGame = (valid: boolean) => {
+        if (!valid) {
           setValue(initialValue)
           return
         }
@@ -102,22 +102,24 @@ export const TextAreaColumn = (header: string, { ...props }: React.InputHTMLAttr
             game.update(gameID, cellProps.column.id, value as string)
               .then((res) => {
                 if (!res.ok) {
-                  setValue(initialValue)
+                  setIsLoading(false)
                 }
               })
               .catch((err) => {
-                setValue(initialValue)
+                setIsLoading(false)
               })
           }
         }
       }
 
       const handleBlur = (e: React.FocusEvent) => {
-        updateGame()
+        const input = e.currentTarget as HTMLInputElement
+        updateGame(input.validity.valid)
       }
+
       if (!isLoading)
         return (
-          <textarea
+          <TableTextArea
             {...props}
             value={value as string}
             onChange={e => setValue(e.target.value)}
@@ -131,7 +133,7 @@ export const TextAreaColumn = (header: string, { ...props }: React.InputHTMLAttr
         )
       else
         return (
-          <p className={`${isLoading ? 'block' : 'hidden'} text-left text-red-600`}>Updating...</p>
+          <Loading text='Updating...' />
         )
     },
     header: header
@@ -174,20 +176,22 @@ export const CheckboxColumn = (header: string, { ...props }: React.InputHTMLAttr
 
       if (!isLoading)
         return (
-          <input
-            {...props}
-            type='checkbox'
-            checked={value as boolean}
-            onChange={handleChange}
-            className={`bg-transparent p-1 rounded 
-              focus:outline-none focus:border-slate-500 focus:ring-slate-500 focus:ring-2 
-              ${props.className}`}
-            disabled={isLoading}
-          />
+          <div className='text-center'>
+            <input
+              {...props}
+              type='checkbox'
+              checked={value as boolean}
+              onChange={handleChange}
+              className={`bg-transparent p-1 rounded 
+                focus:outline-none focus:border-slate-500 focus:ring-slate-500 focus:ring-2 
+                ${props.className}`}
+              disabled={isLoading}
+            />
+          </div>
         )
       else
         return (
-          <p className='text-left text-sky-600'>Updating...</p>
+          <Loading />
         )
     },
     header: header
@@ -206,7 +210,8 @@ export const PlatformsColumn = (header: string, { ...props }: React.InputHTMLAtt
 
       // If the initial value is changed externally, such as on the database 
       useEffect(() => {
-        //setValue(initialValue)
+        setIsLoading(false)
+        setShowDropdownView(false)
       }, [initialValue])
 
       const updateGame = () => {
@@ -236,12 +241,18 @@ export const PlatformsColumn = (header: string, { ...props }: React.InputHTMLAtt
         updateGame()
       }
 
+      if (isLoading) {
+        return (
+          <Loading text='Updating...' />
+        )
+      }
+
       if (!showDropdownView)
         return (
           <div className='bg-transparent p-2 rounded hover:bg-slate-600 select-none cursor-pointer'
             onClick={() => setShowDropdownView(true)}
           >
-            <pre>{initialValue.join('\n')}</pre>
+            <pre>{initialValue.join('\n') || '...'}</pre>
           </div>
         )
       else

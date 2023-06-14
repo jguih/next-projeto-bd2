@@ -5,7 +5,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { useState } from 'react';
-import Button from './button';
+import Button from '../button';
 import { game } from '@/services/httpService';
 import { CheckboxColumn, InputColumn, PlatformsColumn, TextAreaColumn } from '@/services/columnService';
 
@@ -34,7 +34,7 @@ const columns = [
     cell: (props) => <span>{props.getValue()}</span>
   }),
   columnHelper.accessor('name', {
-    ...InputColumn('Name', {className: 'w-40'}),
+    ...InputColumn('Name', {className: 'w-40', required: true}),
   }),
   columnHelper.accessor('enUS_description', {
     ...TextAreaColumn('Description', {className: 'w-[350px] h-32'})
@@ -45,16 +45,18 @@ const columns = [
       type: 'number',
       min: '0.00',
       step: '0.01',
+      required: true
     }),
   }),
   columnHelper.accessor('discount', {
     ...InputColumn('Discount', {
-      className: 'w-[60px]', 
+      className: 'w-20', 
       type: 'number',
       min: '0.00',
-      max: '1.00'
+      max: '1.00',
+      step: '0.01',
+      required: true
     }),
-    header: 'Discount',
   }),
   columnHelper.accessor('isDiscountActive', {
     ...CheckboxColumn('Active', { className: 'w-4 h-4 rounded accent-green-600' })
