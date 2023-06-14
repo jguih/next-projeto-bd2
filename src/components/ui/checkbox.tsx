@@ -15,10 +15,10 @@ export default function Checkbox({
       className={`hover:bg-slate-600 bg-slate-700 rounded select-none flex items-center ${checked && 'bg-sky-800 hover:bg-sky-600'}`}
     >
       <input id={id} type='checkbox' onChange={onChange} checked={checked}
-        className='ml-2 accent-sky-600 w-5 h-5'
+        className='ml-2 accent-sky-600 w-5 h-5 peer'
       />
       <label htmlFor={id} 
-        className='w-full select-none cursor-pointer p-2'
+        className='w-full select-none cursor-pointer p-2 peer-checked:text-sky-500'
       >{label}</label>
     </div>
   );

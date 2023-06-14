@@ -5,54 +5,85 @@ import DropdownItem from "./dropdownItem"
 import Checkbox from "./checkbox"
 
 export default function PlatformsDropdown({
-  id, onChange, initialChecked
+  id, onChange, initialChecked, show
 }: {
   id: string,
-  onChange: (state: PlatformsDropdownData) => null | void,
-  initialChecked: PlatformsDropdownData
+  onChange?: (state: PlatformsDropdownData[]) => null | void,
+  initialChecked?: string[],
+  show?: boolean
 }) {
   const { platforms, isPlatformsLoading, isPlatformsError } = usePlatform();
-  const [checked, setChecked] = useState<PlatformsDropdownData>(initialChecked)
+  const [checked, setChecked] = useState<PlatformsDropdownData[]>([])
 
   useEffect(() => {
-    onChange(checked)
+    onChange?.(checked)
   }, [checked])
 
   useEffect(() => {
-    setChecked(initialChecked)
-  }, [initialChecked])
+    if (!platforms) return
+
+    const arr: PlatformsDropdownData[] = platforms
+      .map(p => {
+        return {
+          platform: p,
+          checked: false
+        }
+      })
+    setChecked(arr)
+  }, [platforms])
+
+  useEffect(() => {
+    if (!platforms) return
+    if (!initialChecked) return
+
+    setChecked(old => {
+      return old 
+        .map(val => {
+          if (initialChecked.includes(val.platform.name)) {
+            return {
+              ...val,
+              checked: true
+            }
+          }
+          return val
+        })
+    })
+  }, [initialChecked, platforms])
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>, platform: Platform) => {
-    setChecked((prev) => {
-      return {
-        ...prev,
-        [platform.name]: {
-          checked: event.target.checked
-        }
-      }
+    setChecked((old) => {
+      return old
+        .map(val => {
+          if (val.platform.name === platform.name)
+            return {
+              platform: platform,
+              checked: event.target.checked
+            }
+          else return val
+        }) as PlatformsDropdownData[]
     })
   }
 
   const getCheckedCountButton = (): React.ReactNode => {
-    let count = 0;
-    checked ?
-      Object.values(checked).forEach((value) => {
-        if (value.checked) count++
-      }) : null
+    let count = checked.filter(val => val.checked).length ?? 0;
     return (
       <button
         className='px-2 rounded-full bg-sky-800 hover:bg-sky-600'
         type='button'
-        onClick={() => setChecked({})}
+        onClick={() => setChecked([])}
       >{count}</button>
     )
   }
 
+  const getChecked = (platformName: string): boolean => {
+    return checked.filter((val) => val.platform.name === platformName)[0]?.checked ?? false
+  }
+
   return (
     <Dropdown
-      className={'w-full'}
       label='Platforms'
       endLabel={getCheckedCountButton()}
+      show={show}
     >
       {platforms?.map((platform, index) => {
         return (
@@ -60,8 +91,8 @@ export default function PlatformsDropdown({
             <Checkbox
               key={index}
               label={platform.name}
-              id={id+'_'+platform.name}
-              checked={checked?.[platform.name]?.checked || false}
+              id={id + '_' + platform.name}
+              checked={getChecked(platform.name)}
               onChange={(e) => handleCheckboxChange(e, platform)}
             />
           </DropdownItem>

@@ -198,25 +198,14 @@ export const PlatformsColumn = (header: string, { ...props }: React.InputHTMLAtt
   return {
     cell: ({ ...cellProps }) => {
       const initialValue = cellProps.getValue() as string[];
-      
+
       // We need to keep and update the state of the cell normally
       const [isLoading, setIsLoading] = useState(false)
-      const [initialChecked, setInitialChecked] = useState<PlatformsDropdownData>({})
       const [showDropdownView, setShowDropdownView] = useState(false)
 
       // If the initial value is changed externally, such as on the database 
       useEffect(() => {
-        let initialChecked = {};
-        initialValue
-          .forEach((value) => {
-            initialChecked = {
-              ...initialChecked,
-              [value]: {
-                checked: true
-              }
-            }
-          })
-        setInitialChecked(initialChecked)
+
       }, [initialValue])
 
       const updateGame = () => {
@@ -235,13 +224,11 @@ export const PlatformsColumn = (header: string, { ...props }: React.InputHTMLAtt
         }
       }
 
-      const handleOnChange = (state: PlatformsDropdownData) => {
-        const values = state ?
-          Object.entries(state)
-            .filter(value => value[1].checked)
-            .map(value => value[0]) : null
-          
-        console.log(values)
+      const handleOnChange = (state: PlatformsDropdownData[]) => {
+        const values = state
+          .filter(val => val.checked)
+          .map(val => val.platform.name)
+        console.log(state)
       }
 
       if (!showDropdownView)
@@ -257,8 +244,9 @@ export const PlatformsColumn = (header: string, { ...props }: React.InputHTMLAtt
           <PlatformsDropdownView
             onReturn={() => setShowDropdownView(false)}
             onChange={handleOnChange}
-            initialChecked={initialChecked}
-            id={cellProps.row.original.id+''}
+            initialChecked={initialValue}
+            id={cellProps.row.original.id + ''}
+            show={true}
           />
         )
     },

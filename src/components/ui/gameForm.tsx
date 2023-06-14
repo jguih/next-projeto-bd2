@@ -12,19 +12,18 @@ type GameFormData = {
 }
 
 export default function GameForm({className}: {className: string}) {
-  const [checkedCheckboxes, setCheckedCheckboxes] = useState<PlatformsDropdownData>({})
+  let platforms: string[] = []
 
-  const getPlatforms = (): string[] => {
-    const values = checkedCheckboxes ?
-      Object.entries(checkedCheckboxes)
-        .filter(value => value[1].checked)
-        .map(value => value[0]) : null
-    
-    return values || [];
+  const handleOnChange = (state: PlatformsDropdownData[]) => {
+    const values = state
+      .filter(val => val.checked)
+      .map(val => val.platform.name)
+    platforms = values;
+    console.log(values)
   }
 
   return (
-    <form onSubmit={(e) => handleSubmit(e, getPlatforms())} className={className}>
+    <form onSubmit={(e) => handleSubmit(e, platforms)} className={className}>
       <label className='block'>
         <span className='block text-sm'>Name</span>
         <Input name='name' type='text' required></Input>
@@ -64,11 +63,12 @@ export default function GameForm({className}: {className: string}) {
           />
         </div>
       </label>
-      <PlatformsDropdown
-        checkedCheckboxes={checkedCheckboxes}
-        setCheckedCheckboxes={setCheckedCheckboxes}
-        id='gameForm'
-      />
+      <div className='mt-3'>
+        <PlatformsDropdown
+          onChange={handleOnChange}
+          id='gameForm'
+        />
+      </div>
       <hr className='mt-3 border border-slate-700'></hr>
       <div className='w-fit mx-auto'>
         <Button type='submit' className='mt-3 mx-auto bg-green-600 hover:bg-green-800'>Adicionar Jogo</Button>

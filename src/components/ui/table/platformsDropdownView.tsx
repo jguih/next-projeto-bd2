@@ -2,12 +2,13 @@ import { Dispatch, SetStateAction } from "react"
 import PlatformsDropdown from "../platformsDropdown"
 
 export default function PlatformsDropdownView({
-  onReturn, onChange, initialChecked, id
+  onReturn, onChange, initialChecked, id, show
 }: {
   onReturn: (event: React.MouseEvent) => null | void | undefined,
-  onChange: (state: PlatformsDropdownData) => null | void,
-  initialChecked: PlatformsDropdownData,
-  id: string
+  onChange: (state: PlatformsDropdownData[]) => null | void,
+  initialChecked: string[],
+  id: string,
+  show?: boolean
 }) {
   return (
     <div className='h-full'>
@@ -22,6 +23,7 @@ export default function PlatformsDropdownView({
         id={id + '_tablePlatformsColumn'}
         onChange={onChange}
         initialChecked={initialChecked}
+        show={show}
       />
     </div>
   )

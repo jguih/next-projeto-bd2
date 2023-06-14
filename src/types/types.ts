@@ -23,7 +23,6 @@ type CheckboxEvent = {
 }
 
 type PlatformsDropdownData = {
-  [name: string]: {
+    platform: Platform
     checked: boolean
-  }
 }
