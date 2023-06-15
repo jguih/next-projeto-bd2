@@ -4,7 +4,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from '../button';
 import { game } from '@/services/httpService';
 import { CheckboxColumn, InputColumn, PlatformsColumn, TextAreaColumn } from '@/services/columnService';
@@ -34,14 +34,14 @@ const columns = [
     cell: (props) => <span>{props.getValue()}</span>
   }),
   columnHelper.accessor('name', {
-    ...InputColumn('Name', {className: 'w-40', required: true}),
+    ...InputColumn('Name', { className: 'w-40', required: true }),
   }),
   columnHelper.accessor('enUS_description', {
-    ...TextAreaColumn('Description', {className: 'w-[350px] h-32'})
+    ...TextAreaColumn('Description', { className: 'w-[350px] h-32' })
   }),
   columnHelper.accessor('price', {
     ...InputColumn('Price R$', {
-      className: 'w-20', 
+      className: 'w-20',
       type: 'number',
       min: '0.00',
       step: '0.01',
@@ -50,7 +50,7 @@ const columns = [
   }),
   columnHelper.accessor('discount', {
     ...InputColumn('Discount', {
-      className: 'w-20', 
+      className: 'w-20',
       type: 'number',
       min: '0.00',
       max: '1.00',
@@ -99,7 +99,7 @@ export default function Table({
           onClick={handleDeleteSelected}
           className='fixed w-fit bottom-2 inset-x-0 mx-auto bg-rose-600 hover:bg-rose-800'
         >Excluir Selecionados</Button> : null}
-      <table className='table-auto border-separate border-spacing-2 p-1'>
+      <table className='table-auto border-separate border-spacing-2'>
         <thead className=''>
           {table.getHeaderGroups().map(headerGroup => (
             <tr key={headerGroup.id} className=''>

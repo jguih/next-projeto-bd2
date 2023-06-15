@@ -1,17 +1,11 @@
 import { Input } from "./input";
 import Button from "./button";
-import Dropdown from "./dropdown";
-import { FormEventHandler, useEffect, useState } from "react";
-import DropdownItem from "./dropdownItem";
-import Checkbox from "./checkbox";
 import { handleSubmit } from "@/services/gameFormService";
 import PlatformsDropdown from "./platformsDropdown";
-
-type GameFormData = {
-  className: string,
-}
+import { useState } from "react";
 
 export default function GameForm({className}: {className: string}) {
+  const [resetDropdown, setResetDropdown] = useState(false)
   let platforms: string[] = []
 
   const handleOnChange = (state: PlatformsDropdownData[]) => {
@@ -21,8 +15,12 @@ export default function GameForm({className}: {className: string}) {
     platforms = values;
   }
 
+  const onSuccess = () => {
+    setResetDropdown(true)
+  }
+
   return (
-    <form onSubmit={(e) => handleSubmit(e, platforms)} className={className}>
+    <form onSubmit={(e) => handleSubmit(e, platforms, onSuccess)} className={className}>
       <label className='block'>
         <span className='block text-sm'>Name</span>
         <Input name='name' type='text' required></Input>
@@ -66,6 +64,7 @@ export default function GameForm({className}: {className: string}) {
         <PlatformsDropdown
           onChange={handleOnChange}
           id='gameForm'
+          reset={resetDropdown}
         />
       </div>
       <hr className='mt-3 border border-slate-700'></hr>

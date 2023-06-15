@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 type DropdownData = {
   children: React.ReactNode,
   label: string,
-  endLabel: React.ReactNode,
+  endLabel?: React.ReactNode,
   show?: boolean
 }
 
@@ -30,11 +30,12 @@ export default function Dropdown({
             </svg>}
           <span className='grow-0'>{label}</span>
         </div>
-        <div>{endLabel}</div>
+        {endLabel && <div>{endLabel}</div>}
       </div>
-      <div className={`${shouldShow ? '' : 'hidden'} left-0 mt-1 py-3 px-2 rounded bg-slate-900 w-full h-fit`}>
-        {children}
-      </div>
+      {shouldShow &&
+        <div className={`left-0 mt-1 py-3 px-2 rounded bg-slate-900 w-full h-fit`}>
+          {children}
+        </div>}
     </div>
   )
 }

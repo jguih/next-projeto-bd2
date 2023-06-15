@@ -6,7 +6,7 @@ export default function Button({
     <button
       type={type}
       onClick={onClick}
-      className={'py-1 px-2 border border-slate-600 rounded-md '+className}
+      className={'py-1 px-2 border border-slate-600 rounded-md select-none '+className}
     >{children}</button>
   );
 }

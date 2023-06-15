@@ -1,10 +1,11 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { useEffect, useState } from "react"
 import { game } from "./httpService"
-import PlatformsDropdownView from "@/components/ui/table/platformsDropdownView"
 import Loading from "@/components/ui/loading"
 import { TableInput } from "@/components/ui/table/tableInput"
 import { TableTextArea } from "@/components/ui/table/tableTextArea"
+import TablePlatformsList from "@/components/ui/table/tablePlatformsList"
+import TablePlatformsDropdownView from "@/components/ui/table/tablePlatformsDropdownView"
 
 export const InputColumn = (header: string, { ...props }: React.InputHTMLAttributes<HTMLInputElement> = {}): Partial<ColumnDef<Game>> => {
   return {
@@ -32,10 +33,12 @@ export const InputColumn = (header: string, { ...props }: React.InputHTMLAttribu
             game.update(gameID, cellProps.column.id, value as string)
               .then((res) => {
                 if (!res.ok) {
+                  setValue(initialValue)
                   setIsLoading(false)
                 }
               })
               .catch((err) => {
+                setValue(initialValue)
                 setIsLoading(false)
               })
           }
@@ -102,10 +105,12 @@ export const TextAreaColumn = (header: string, { ...props }: React.InputHTMLAttr
             game.update(gameID, cellProps.column.id, value as string)
               .then((res) => {
                 if (!res.ok) {
+                  setValue(initialValue)
                   setIsLoading(false)
                 }
               })
               .catch((err) => {
+                setValue(initialValue)
                 setIsLoading(false)
               })
           }
@@ -162,10 +167,12 @@ export const CheckboxColumn = (header: string, { ...props }: React.InputHTMLAttr
             .then((res) => {
               if (!res.ok) {
                 setValue(initialValue)
+                setIsLoading(false)
               }
             })
             .catch((err) => {
               setValue(initialValue)
+              setIsLoading(false)
             })
         }
       }
@@ -202,8 +209,6 @@ export const PlatformsColumn = (header: string, { ...props }: React.InputHTMLAtt
   return {
     cell: ({ ...cellProps }) => {
       const initialValue = cellProps.getValue() as string[];
-
-      // We need to keep and update the state of the cell normally
       const [value, setValue] = useState(initialValue);
       const [isLoading, setIsLoading] = useState(false)
       const [showDropdownView, setShowDropdownView] = useState(false)
@@ -214,19 +219,50 @@ export const PlatformsColumn = (header: string, { ...props }: React.InputHTMLAtt
         setShowDropdownView(false)
       }, [initialValue])
 
+      const areArraysEqual = (arr1: string[], arr2: string[]): boolean => {
+        if (arr1.length !== arr2.length) return false
+        if (arr1 === arr2) return true
+
+        const sortedArr1 = arr1
+          .sort(
+            (a, b) => {
+              if (a < b) return -1
+              if (a > b) return 1
+              return 0
+            })
+
+        const sortedArr2 = arr2
+          .sort(
+            (a, b) => {
+              if (a < b) return -1
+              if (a > b) return 1
+              return 0
+            })
+
+        return sortedArr1.every((val, index) => {
+          return val === sortedArr2[index]
+        })
+      }
+
       const updateGame = () => {
-        const gameID = cellProps.row.original.id
-        if (gameID) {
-          setIsLoading(true)
-          game.update(gameID, cellProps.column.id, value)
-            .then((res) => {
-              console.log(res)
-              if (!res.ok) {
-              }
-            })
-            .catch((err) => {
-              console.log(err)
-            })
+        if (!areArraysEqual(value, initialValue)) {
+          const gameID = cellProps.row.original.id
+          if (gameID) {
+            setIsLoading(true)
+            game.update(gameID, cellProps.column.id, value)
+              .then((res) => {
+                if (!res.ok) {
+                  setValue(initialValue)
+                  setIsLoading(false)
+                }
+              })
+              .catch((err) => {
+                setValue(initialValue)
+                setIsLoading(false)
+              })
+          }
+        } else {
+          setShowDropdownView(false)
         }
       }
 
@@ -249,15 +285,14 @@ export const PlatformsColumn = (header: string, { ...props }: React.InputHTMLAtt
 
       if (!showDropdownView)
         return (
-          <div className='bg-transparent p-2 rounded hover:bg-slate-600 select-none cursor-pointer'
-            onClick={() => setShowDropdownView(true)}
-          >
-            <pre>{initialValue.join('\n') || '...'}</pre>
-          </div>
+          <TablePlatformsList
+            onClick={(e) => setShowDropdownView(true)}
+            value={initialValue}
+          />
         )
       else
         return (
-          <PlatformsDropdownView
+          <TablePlatformsDropdownView
             onReturn={() => setShowDropdownView(false)}
             onSave={handleOnSave}
             onChange={handleOnChange}

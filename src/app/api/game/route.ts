@@ -79,10 +79,17 @@ export async function PATCH(request: NextRequest) {
     })
   return await updateGame(Number.parseInt(id), req.column, req.value)
     .then((res) => {
-      return NextResponse.json({}, {
-        status: 200,
-        statusText: 'Game with id '+id+' updated succesfully'
-      })
+      if (res.rowCount === 1) {
+        return NextResponse.json({}, {
+          status: 200,
+          statusText: 'Game with id '+id+' updated succesfully',
+        })
+      } else {
+        return NextResponse.json({}, {
+          status: 400,
+          statusText: 'No games where updated'
+        })
+      }
     })
     .catch((err) => {
       return NextResponse.json({}, {

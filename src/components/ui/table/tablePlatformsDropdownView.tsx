@@ -1,8 +1,7 @@
-import { Dispatch, SetStateAction } from "react"
 import PlatformsDropdown from "../platformsDropdown"
 import Button from "../button"
 
-export default function PlatformsDropdownView({
+export default function TablePlatformsDropdownView({
   onReturn, onSave, onChange, initialChecked, id, show
 }: {
   onReturn: (event: React.MouseEvent) => null | void | undefined,

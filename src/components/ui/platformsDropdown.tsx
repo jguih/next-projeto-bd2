@@ -1,16 +1,18 @@
 import usePlatform from "@/hooks/usePlatform"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import Dropdown from "./dropdown"
 import DropdownItem from "./dropdownItem"
 import Checkbox from "./checkbox"
+import Loading from "./loading"
 
 export default function PlatformsDropdown({
-  id, onChange, initialChecked, show
+  id, onChange, initialChecked, show, reset
 }: {
   id: string,
   onChange?: (state: PlatformsDropdownData[]) => null | void,
   initialChecked?: string[],
-  show?: boolean
+  show?: boolean,
+  reset?: boolean
 }) {
   const { platforms, isPlatformsLoading, isPlatformsError } = usePlatform();
   const [checked, setChecked] = useState<PlatformsDropdownData[]>([])
@@ -18,6 +20,11 @@ export default function PlatformsDropdown({
   useEffect(() => {
     onChange?.(checked)
   }, [checked])
+
+  useEffect(() => {
+    if (reset !== undefined && reset) 
+      resetChecked()
+  }, [reset])
 
   useEffect(() => {
     if (!platforms) return
@@ -37,11 +44,11 @@ export default function PlatformsDropdown({
     if (!initialChecked) return
 
     setChecked(old => {
-      return old 
+      return old
         .map(val => {
           if (initialChecked.includes(val.platform.name)) {
             return {
-              ...val,
+              platform: val.platform,
               checked: true
             }
           }
@@ -64,13 +71,26 @@ export default function PlatformsDropdown({
     })
   }
 
-  const getCheckedCountButton = (): React.ReactNode => {
+  const resetChecked = () => {
+    console.log('reseting platforms dropdown...')
+    setChecked(old => {
+      return old
+        .map(val => {
+          return {
+            ...val,
+            checked: false
+          }
+        })
+    })
+  }
+
+  const getEndLabel = (): React.ReactNode => {
     let count = checked.filter(val => val.checked).length ?? 0;
     return (
       <button
-        className='px-2 rounded-full bg-sky-800 hover:bg-sky-600'
+        className='px-2 rounded-full bg-sky-800 hover:bg-red-600'
         type='button'
-        onClick={() => setChecked([])}
+        onClick={() => resetChecked()}
       >{count}</button>
     )
   }
@@ -79,25 +99,39 @@ export default function PlatformsDropdown({
     return checked.filter((val) => val.platform.name === platformName)[0]?.checked ?? false
   }
 
-  return (
-    <Dropdown
-      label='Platforms'
-      endLabel={getCheckedCountButton()}
-      show={show}
-    >
-      {platforms?.map((platform, index) => {
-        return (
-          <DropdownItem key={index * 10}>
-            <Checkbox
-              key={index}
-              label={platform.name}
-              id={id + '_' + platform.name}
-              checked={getChecked(platform.name)}
-              onChange={(e) => handleCheckboxChange(e, platform)}
-            />
-          </DropdownItem>
-        )
-      })}
-    </Dropdown>
-  )
+  if (isPlatformsLoading) {
+    return (
+      <Loading text='Loading Platforms...' />
+    )
+  }
+
+  if (isPlatformsError) {
+    return (
+      <p>Error!</p>
+    )
+  }
+
+  if (platforms) {
+    return (
+      <Dropdown
+        label='Platforms'
+        endLabel={getEndLabel()}
+        show={show}
+      >
+        {platforms.map((platform, index) => {
+          return (
+            <DropdownItem key={index * 10}>
+              <Checkbox
+                key={index}
+                label={platform.name}
+                id={id + '_' + platform.name}
+                checked={getChecked(platform.name)}
+                onChange={(e) => handleCheckboxChange(e, platform)}
+              />
+            </DropdownItem>
+          )
+        })}
+      </Dropdown>
+    )
+  }
 }

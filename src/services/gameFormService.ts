@@ -8,7 +8,9 @@ function parse(value: string) {
   return Number.parseFloat(value)
 }
 
-export async function handleSubmit(event: React.FormEvent, platforms: string[]) {
+export async function handleSubmit(
+    event: React.FormEvent, platforms: string[], onSuccess?: () => void
+  ) {
   event.preventDefault();
   
   const form = event.target as HTMLFormElement
@@ -26,7 +28,8 @@ export async function handleSubmit(event: React.FormEvent, platforms: string[]) 
   game.add(newGame)
     .then((res) => {
       if (res.ok) {
-        
+        form.reset();
+        onSuccess?.()
       }
     })
 }

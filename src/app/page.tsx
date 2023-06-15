@@ -10,7 +10,7 @@ import Loading from "@/components/ui/loading";
 export default function Home() {
   const { games, isLoading: isGameLoading, isError: isGameError } = useGames();
   const [showGameForm, setShowGameForm] = useState(false);
-
+  
   if (isGameLoading) {
     return (
       <>
