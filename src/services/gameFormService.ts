@@ -1,5 +1,9 @@
 import { game } from "./httpService";
 
+function getTextArea(input: any) {
+  return input instanceof HTMLTextAreaElement ? input : null
+}
+
 function getInput(input: any) {
   return input instanceof HTMLInputElement ? input : null
 }
@@ -18,7 +22,7 @@ export async function handleSubmit(
   const getElement = (name: string) => elements.namedItem(name)
   const newGame: Game = {
     name: getInput(getElement('name'))?.value || '',
-    enUS_description: getInput(getElement('enUS_description'))?.value || '',
+    enUS_description: getTextArea(getElement('enUS_description'))?.value || '',
     price: parse(getInput(getElement('price'))?.value || ''),
     discount: parse(getInput(getElement('discount'))?.value || ''),
     isDiscountActive: getInput(getElement('isDiscountActive'))?.checked || false,

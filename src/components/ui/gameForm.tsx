@@ -3,9 +3,10 @@ import Button from "./button";
 import { handleSubmit } from "@/services/gameFormService";
 import PlatformsDropdown from "./platformsDropdown";
 import { useState } from "react";
+import { TextArea } from "./textArea";
 
 export default function GameForm({className}: {className: string}) {
-  const [resetDropdown, setResetDropdown] = useState(false)
+  const [toggleResetDropdown, setToggleResetDropdown] = useState(false)
   let platforms: string[] = []
 
   const handleOnChange = (state: PlatformsDropdownData[]) => {
@@ -16,7 +17,7 @@ export default function GameForm({className}: {className: string}) {
   }
 
   const onSuccess = () => {
-    setResetDropdown(true)
+    setToggleResetDropdown(old => !old)
   }
 
   return (
@@ -27,7 +28,7 @@ export default function GameForm({className}: {className: string}) {
       </label>
       <label className='block mt-3'>
         <span className='block text-sm'>Description</span>
-        <Input name='enUS_description' type='text'></Input>
+        <TextArea name='enUS_description' className='h-32' />
       </label>
       <label className='block mt-3 mb-3'>
         <span className='block text-sm'>Price</span>
@@ -55,8 +56,8 @@ export default function GameForm({className}: {className: string}) {
           <input
             name='isDiscountActive'
             type='checkbox'
-            className='w-8 h-8 mt-2 accent-green-600 flex-none rounded'
-            defaultChecked={true}
+            className='w-8 h-8 mt-2 accent-green-600 flex-none border rounded'
+            defaultChecked={false}
           />
         </div>
       </label>
@@ -64,7 +65,7 @@ export default function GameForm({className}: {className: string}) {
         <PlatformsDropdown
           onChange={handleOnChange}
           id='gameForm'
-          reset={resetDropdown}
+          reset={toggleResetDropdown}
         />
       </div>
       <hr className='mt-3 border border-slate-700'></hr>

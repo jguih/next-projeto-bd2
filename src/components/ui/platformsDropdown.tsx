@@ -22,7 +22,7 @@ export default function PlatformsDropdown({
   }, [checked])
 
   useEffect(() => {
-    if (reset !== undefined && reset) 
+    if (reset !== undefined) 
       resetChecked()
   }, [reset])
 
