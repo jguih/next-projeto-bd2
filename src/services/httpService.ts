@@ -39,5 +39,17 @@ export const game = {
       console.log(err)
       throw err
     })
+  },
+  insertSample: async(): Promise<Response> => {
+    return await fetch('/api/game/sample', {
+      method: 'POST'
+    })
+    .then((res) => {
+      return res
+    })
+    .catch((err) => {
+      console.log(err)
+      throw err
+    })
   }
 }

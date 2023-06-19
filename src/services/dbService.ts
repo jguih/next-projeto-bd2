@@ -8,7 +8,8 @@ const sql = {
   insertGame: 'INSERT INTO "game_data" ("name", "enUS_description", "price", "discount", "isDiscountActive", "platforms") VALUES ($1, $2, $3, $4, $5, $6)',
   updateGame: 'UPDATE game_data SET %I = $1 WHERE "id" = $2',
   deleteGame: 'DELETE FROM game WHERE id = $1',
-  platforms: 'SELECT * FROM platform'
+  platforms: 'SELECT * FROM platform',
+  insertSample: 'CALL "insert_sample"()'
 }
 
 pool.on('error', (err, client) => {
@@ -26,7 +27,6 @@ export async function getGames(): Promise<QueryResult<any>> {
         })
         .catch(err => {
           client.release()
-          console.log('dbService.ts: error while getting games \n'+err)
           throw err
         })
     })
@@ -46,7 +46,6 @@ export async function getPlatforms(): Promise<QueryResult<any>> {
         })
         .catch(err => {
           client.release()
-          console.log('dbService.ts: error while getting platforms \n'+err)
           throw err
         })
     })
@@ -68,7 +67,6 @@ export async function addGame(newGame: Game): Promise<QueryResult<any>> {
         })
         .catch(err => {
           client.release()
-          console.log('dbService.ts: error while inserting game \n'+err)
           throw err
         })
     })
@@ -89,7 +87,6 @@ export async function updateGame(id: number, column: string, value: string | str
         })
         .catch(err => {
           client.release()
-          console.log('dbService.ts: error while updating game \n'+err)
           throw err
         })
     })
@@ -109,7 +106,25 @@ export async function deleteGame(id: number) {
         })
         .catch(err => {
           client.release()
-          console.log('dbService.ts: error while deleting game \n'+err)
+          throw err
+        })
+    })
+    .catch(err => {
+      console.log(err)
+      throw err
+    })
+}
+
+export async function InsertSample() {
+  return pool.connect()
+    .then(async client => {
+      return client.query(sql.insertSample)
+        .then(res => {
+          client.release()
+          return res
+        })
+        .catch(err => {
+          client.release()
           throw err
         })
     })
